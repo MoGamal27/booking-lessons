@@ -5,18 +5,22 @@ const bcrypt = require('bcrypt');
 // Create a new user
 exports.createUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password, role } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      role,
+    });
 
-  const newUser = await User.create({
-    firstName,
-    lastName,
-    email,
-    password: hashedPassword,
-    role,
-  });
-  res.status(201).json(newUser);
-  ;
+    res.status(201).json(newUser);
+  } catch (err) {
+    console.error('Error while creating user:', err); // Log the full error
+    res.status(500).json({ message: 'User creation failed', error: err.message });
+  }
   });
   // Get all users
   exports.getAllUsers = asyncHandler(async (req, res) => {
