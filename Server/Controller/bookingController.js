@@ -1,16 +1,11 @@
-<<<<<<< HEAD
 const { Booking, User, Schedule } = require('../Model/index');
 const {  Op} = require('sequelize');
 const getPaymentUrl = require('../Services/paymentUrlService');
 
-=======
-const { Booking, User } = require('../Model/index');
->>>>>>> parent of 089933e (initial commit)
 
 exports.createBooking = async (req, res) => {
     try {
         const { studentId, teacherId, startTime, endTime } = req.body;
-<<<<<<< HEAD
 
         const schedule = await Schedule.findOne({
             where: {
@@ -42,10 +37,6 @@ exports.createBooking = async (req, res) => {
         // Redirect the user to Paybox
         return res.redirect(paymentUrl);
 
-=======
-        const booking = await Booking.create({ studentId, teacherId, startTime, endTime });
-        res.status(201).json(booking);
->>>>>>> parent of 089933e (initial commit)
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

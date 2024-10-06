@@ -3,15 +3,12 @@ const express = require('express');
 const { PORT } = process.env || 3000;
 const sequelize = require('./Config/connectDB');
 const mainRoutes = require('./Routes/index');
-<<<<<<< HEAD
 const authRoutes = require('./Routes/authRoutes');
 const http = require('http');
 const socketServer = require('./socketServer');
 const chatSocket = require('./sockets/chatSocket')
 
 
-=======
->>>>>>> parent of 089933e (initial commit)
 // Init app
 const app = express();
 const server = http.createServer(app);
