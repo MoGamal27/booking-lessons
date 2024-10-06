@@ -5,19 +5,26 @@ const sequelize = require('../Config/connectDB');
 class Teacher extends Model {}
 
 Teacher.init({
-    userName: {
+    name: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    old: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     bio: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    image: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    picture: {
+    video: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-
 }, {
     sequelize,
     modelName: 'Teacher',

@@ -15,11 +15,9 @@ const validateTeacher = [
         .isLength({ min: 3 })
         .withMessage('Bio must be at least 3 characters long'),
 
-    check('picture')
+    check('image')
         .notEmpty()
-        .withMessage('Picture is required')
-       
-
+        .withMessage('Image is required'),
     ,
     validatorMiddleware,
 ];

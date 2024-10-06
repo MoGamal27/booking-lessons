@@ -18,6 +18,13 @@ Schedule.init({
         allowNull: false,
         defaultValue: []
       },
+<<<<<<< HEAD
+      price: {
+        type: DataTypes.FLOAT,
+        allowNull: false
+      }
+=======
+>>>>>>> parent of 089933e (initial commit)
 }, {
     sequelize,
     modelName: 'Schedule',

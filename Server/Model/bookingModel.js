@@ -27,7 +27,16 @@ Booking.init({
   endTime: {
     type: DataTypes.DATE,
     allowNull: false
-  }
+  },
+  amount: {
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
+  isPaid: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
 }, {
   sequelize,
   modelName: 'Booking',

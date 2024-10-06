@@ -2,8 +2,19 @@ const { Schedule, User } = require('../Model/index');
 
 exports.createSchedule = async (req, res) => {
     try {
+<<<<<<< HEAD
+        const { teacherId, availableTimes, price } = req.body;
+        
+        const schedule = await Schedule.create({ 
+            teacherId, 
+            availableTimes: JSON.stringify(availableTimes) ,
+            price
+        });
+
+=======
         const { teacherId, availableTimes } = req.body;
         const schedule = await Schedule.create({ teacherId, availableTimes });
+>>>>>>> parent of 089933e (initial commit)
         res.status(201).json(schedule);
     } catch (error) {
         res.status(400).json({ message: error.message });
