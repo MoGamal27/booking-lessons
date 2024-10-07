@@ -4,9 +4,10 @@ const { PORT } = process.env || 3000;
 const sequelize = require('./Config/connectDB');
 const mainRoutes = require('./Routes/index');
 const authRoutes = require('./Routes/authRoutes');
+const googleRoutes = require('./Routes/googleRoutes');
 const http = require('http');
 const socketServer = require('./socketServer');
-const chatSocket = require('./sockets/chatSocket')
+const chatSocket = require('./sockets/chatSocket');
 
 
 // Init app
@@ -34,6 +35,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api', mainRoutes);
+app.use('/auth', googleRoutes);
 
 // global middleware for not found router
 app.all("*", (req, res, next) => {

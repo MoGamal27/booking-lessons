@@ -19,8 +19,8 @@ UserGoogle.init({
         allowNull: false
     },
     googleToken: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.JSON,
+      allowNull: false
     }
 }, {
     sequelize,
