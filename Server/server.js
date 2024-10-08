@@ -5,17 +5,24 @@ const sequelize = require('./Config/connectDB');
 const mainRoutes = require('./Routes/index');
 const authRoutes = require('./Routes/authRoutes');
 const googleRoutes = require('./Routes/googleRoutes');
+const cors = require('cors');
 const http = require('http');
-const socketServer = require('./socketServer');
+const initializeSocketServer = require('./socketServer');
 const chatSocket = require('./sockets/chatSocket');
 
-
-// Init app
 const app = express();
-const server = http.createServer(app);
-const io = socketServer(server);
-chatSocket(io);
 
+// Enable CORS
+app.use(cors());
+
+
+const server = http.createServer(app);
+
+// Initialize Socket.IO
+const io = initializeSocketServer(server);
+
+// Set up chat socket functionality
+chatSocket(io);
 
 // Connect to DB
 sequelize.sync()

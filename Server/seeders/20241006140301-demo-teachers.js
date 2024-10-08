@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('teachers', [
       {
         name: 'Teacher medo',
@@ -38,7 +38,16 @@ module.exports = {
         video: 'https://res.cloudinary.com/dx0n30auq/video/upload/v1728222636/videos/nbpt4gwtok6enoubgpgh.mp4',
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      },
+      {
+        name: 'Teacher manar',
+        old: 24,
+        bio: '',
+        image: 'https://res.cloudinary.com/dx0n30auq/image/upload/v1728413818/videos/mvxs2teiztjr6ozeq8kb.png',
+        video: 'https://res.cloudinary.com/dx0n30auq/video/upload/v1728413788/videos/tpe4himylvj6f66e6li3.mp4',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
     ], {});
   },
 
