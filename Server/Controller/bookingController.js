@@ -1,6 +1,6 @@
 const { Booking, User, Schedule } = require('../Model/index');
 const {  Op} = require('sequelize');
-const getPaymentUrl = require('../Services/paymentUrlService');
+const sendEmail = require('../Services/emailService');
 
 
 exports.createBooking = async (req, res) => {
@@ -21,9 +21,7 @@ exports.createBooking = async (req, res) => {
             return res.status(400).json({ message: 'Schedule not available' });
         }
 
-        const amount = schedule.price;
-
-        const booking = await Booking.create({ studentId, teacherId, startTime, endTime, amount });
+        const booking = await Booking.create({ studentId, teacherId, startTime, endTime});
 
         let availableTimes = JSON.parse(schedule.availableTimes);
         availableTimes = availableTimes.filter(
@@ -32,10 +30,20 @@ exports.createBooking = async (req, res) => {
         schedule.availableTimes = JSON.stringify(availableTimes);
         await schedule.save();
 
-        const paymentUrl = getPaymentUrl(booking);
+       //send email confirm booking
+       await sendEmail({
+        email: (await User.findByPk(studentId)).email,
+        subject: 'Booking Confirmation',
+        text: `Your booking has been confirmed.`,
+      });
 
-        // Redirect the user to Paybox
-        return res.redirect(paymentUrl);
+      await sendEmail({
+        email: (await User.findByPk(teacherId)).email,
+        subject: 'Booking Confirmation',
+        text: `You have a new booking.`,
+      });
+
+      res.status(201).json(booking);
 
     } catch (error) {
         res.status(400).json({ message: error.message });

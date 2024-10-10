@@ -16,7 +16,7 @@ Booking.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: 'Teachers',
       key: 'id'
     }
   },
@@ -27,15 +27,6 @@ Booking.init({
   endTime: {
     type: DataTypes.DATE,
     allowNull: false
-  },
-  amount: {
-    type: DataTypes.FLOAT,
-    allowNull: false
-  },
-  isPaid: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
   },
 }, {
   sequelize,

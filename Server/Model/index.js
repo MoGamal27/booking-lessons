@@ -6,14 +6,14 @@ const Teacher = require('./teacherModel');
 const Booking = require('./bookingModel');
 
 // define associations
-User.hasMany(Schedule, { foreignKey: 'teacherId', sourceKey: 'id' });
-Schedule.belongsTo(User, { foreignKey: 'teacherId', targetKey: 'id' });
+Teacher.hasMany(Schedule, { foreignKey: 'teacherId', sourceKey: 'id' });
+Schedule.belongsTo(Teacher, { foreignKey: 'teacherId', targetKey: 'id' });
 
 User.hasMany(Teacher, { foreignKey: 'userId', sourceKey: 'id' });
 Teacher.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
-User.hasMany(Booking, { foreignKey: 'teacherId', sourceKey: 'id' });
-Booking.belongsTo(User, { foreignKey: 'teacherId', targetKey: 'id' });
+Teacher.hasMany(Booking, { foreignKey: 'teacherId', sourceKey: 'id' });
+Booking.belongsTo(Teacher, { foreignKey: 'teacherId', targetKey: 'id' });
 
 User.hasMany(Booking, { foreignKey: 'studentId', sourceKey: 'id' });
 Booking.belongsTo(User, { foreignKey: 'studentId', targetKey: 'id' });

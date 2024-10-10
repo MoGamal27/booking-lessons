@@ -1,13 +1,12 @@
-const { Schedule, User } = require('../Model/index');
+const { Schedule, User, Teacher } = require('../Model/index');
 
 exports.createSchedule = async (req, res) => {
     try {
-        const { teacherId, availableTimes, price } = req.body;
+        const { teacherId, availableTimes} = req.body;
         
         const schedule = await Schedule.create({ 
             teacherId, 
             availableTimes: JSON.stringify(availableTimes) ,
-            price
         });
 
         res.status(201).json(schedule);
@@ -21,7 +20,7 @@ exports.getScheduleByTeacher = async (req, res) => {
         const { teacherId } = req.params;
         const schedules = await Schedule.findAll({
             where: { teacherId },
-            include: [{ model: User, as: 'User' }]
+            include: [{ model: Teacher, as: 'Teacher', attributes: ['id', 'name'] }],
         });
         res.status(200).json(schedules);
     } catch (error) {
