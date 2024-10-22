@@ -25,12 +25,15 @@ exports.createUser = asyncHandler(async (req, res) => {
   // Get all users
   exports.getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.findAll();
-    res.status(200).json(users);
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
   });
 
   // Get a single
   exports.getUserById = asyncHandler(async (req, res) => {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(req.user.id);
     if (!user) {
       res.status(404);
       throw new Error('User not found');

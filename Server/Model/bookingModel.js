@@ -28,6 +28,10 @@ Booking.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  isCompleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
 }, {
   sequelize,
   modelName: 'Booking',

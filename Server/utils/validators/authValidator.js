@@ -3,18 +3,11 @@ const validatorMiddleware = require('../../Middleware/validatorMiddleware');
 const User = require('../../Model/userModel');
 
 const signupValidator = [
-    check('firstName')
+    check('name')
         .notEmpty()
-        .withMessage('First name is required')
+        .withMessage('name is required')
         .isLength({ min: 3 })
-        .withMessage('First name must be at least 3 characters long'),
-
-    check('lastName')
-        .notEmpty()
-        .withMessage('Last name is required')
-        .isLength({ min: 3 })
-        .withMessage('Last name must be at least 3 characters long'),   
-
+        .withMessage('name must be at least 3 characters long'),
     check('email')
         .notEmpty()
         .withMessage('Email is required')

@@ -17,10 +17,6 @@ Schedule.init({
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: []
-      },
-      price: {
-        type: DataTypes.FLOAT,
-        allowNull: false
       }
 }, {
     sequelize,

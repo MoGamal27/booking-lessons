@@ -5,15 +5,17 @@ const asyncHandler = require('express-async-handler');
 
 exports.createTeacher = async (req, res) => {
     try {
-        const { name, old, bio, image, video } = req.body;
+        const { name, email ,old, bio, image, video, fees } = req.body;
         
         // Create teacher in database
         const teacher = await Teacher.create({
-            name, 
+            name,
+            email, 
             old, 
             bio,
             image,
             video,
+            fees,
         });
 
         console.log('Teacher created:', teacher);
@@ -56,7 +58,7 @@ exports.updateTeacher = asyncHandler(async (req, res) => {
 })
 
 exports.deleteTeacher = asyncHandler(async (req, res) => {
-    const teacher = await Teacher.findByPk(req.params.id);
+    const teacher = await Teacher.findByPk(req.params);
     if (!teacher) {
         res.status(404);
         throw new Error('Teacher not found');

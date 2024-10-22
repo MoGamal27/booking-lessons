@@ -4,14 +4,9 @@ const userRoles = require('../utils/userRoles');
 class User extends Model {}
 
 User.init({
-    firstName: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    lastName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
     },
     email: {
         type: DataTypes.STRING,

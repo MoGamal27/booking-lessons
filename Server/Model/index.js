@@ -9,9 +9,6 @@ const Booking = require('./bookingModel');
 Teacher.hasMany(Schedule, { foreignKey: 'teacherId', sourceKey: 'id' });
 Schedule.belongsTo(Teacher, { foreignKey: 'teacherId', targetKey: 'id' });
 
-User.hasMany(Teacher, { foreignKey: 'userId', sourceKey: 'id' });
-Teacher.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
-
 Teacher.hasMany(Booking, { foreignKey: 'teacherId', sourceKey: 'id' });
 Booking.belongsTo(Teacher, { foreignKey: 'teacherId', targetKey: 'id' });
 
