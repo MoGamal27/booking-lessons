@@ -20,12 +20,12 @@ Booking.init({
       key: 'id'
     }
   },
-  startTime: {
-    type: DataTypes.DATE,
+  slotDate: {
+    type: DataTypes.STRING,
     allowNull: false
   },
-  endTime: {
-    type: DataTypes.DATE,
+  slotTime: {
+    type: DataTypes.STRING,
     allowNull: false
   },
   isCompleted: {

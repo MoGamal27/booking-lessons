@@ -9,7 +9,6 @@ const cors = require('cors');
 const http = require('http');
 const initializeSocketServer = require('./socketServer');
 const chatSocket = require('./sockets/chatSocket');
-
 const app = express();
 
 // Enable CORS

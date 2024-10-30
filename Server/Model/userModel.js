@@ -22,6 +22,10 @@ User.init({
         values: Object.values(userRoles),
         allowNull: false,
         defaultValue: userRoles.STUDENT,
+    },
+    point: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
     }
 }, {
   sequelize,

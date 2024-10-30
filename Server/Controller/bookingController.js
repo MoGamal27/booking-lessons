@@ -5,31 +5,15 @@ const sendEmail = require('../Services/emailService');
 
 exports.createBooking = async (req, res) => {
     try {
-        const { teacherId, startTime, endTime } = req.body;
+        const { teacherId, slotDate, slotTime } = req.body;
         const studentId = req.currentUser.id;
 
         // Check if there's an existing booking that overlaps with the requested time
         const existingBooking = await Booking.findOne({
             where: {
-                teacherId,
-                [Op.or]: [
-                    {
-                        startTime: {
-                            [Op.between]: [startTime, endTime]
-                        }
-                    },
-                    {
-                        endTime: {
-                            [Op.between]: [startTime, endTime]
-                        }
-                    },
-                    {
-                        [Op.and]: [
-                            { startTime: { [Op.lte]: startTime } },
-                            { endTime: { [Op.gte]: endTime } }
-                        ]
-                    }
-                ]
+                teacherId: teacherId,
+                slotDate,
+                slotTime,
             }
         });
 
@@ -37,7 +21,7 @@ exports.createBooking = async (req, res) => {
             return res.status(400).json({ success: false, message: 'This time slot is already booked' });
         }
 
-        const booking = await Booking.create({ studentId, teacherId, startTime, endTime });
+        const booking = await Booking.create({ studentId, teacherId, slotDate, slotTime });
    
         res.status(201).json({ success: true, data: booking });
 
@@ -61,7 +45,7 @@ exports.getBookings = async (req, res) => {
                 model: User,
                 attributes: ['id', 'name', 'email']
             }],
-            order: [['startTime', 'ASC']]
+            order: [['slotDate', 'ASC']]
         });
 
         if (!bookings || bookings.length === 0) {
@@ -83,8 +67,8 @@ exports.getBookings = async (req, res) => {
                     name: booking.User.name,
                     email: booking.User.email
                 },
-                startTime: booking.startTime,
-                endTime: booking.endTime,
+                slotDate: booking.slotDate,
+                slotTime: booking.slotTime,
                 completed: booking.completed  // Include this if you want to explicitly show it's false
             };
         });
@@ -110,7 +94,7 @@ exports.getStudentBookings = async (req, res) => {
                 model: Teacher,
                 attributes: ['id', 'name', 'image', 'bio']
             }],
-            order: [['startTime', 'ASC']]
+            order: [['slotDate', 'ASC']]
         });
 
         if (!bookings || bookings.length === 0) {
@@ -122,8 +106,8 @@ exports.getStudentBookings = async (req, res) => {
             id: booking.id,
             studentId: booking.studentId,
             teacherId: booking.teacherId,
-            startTime: booking.startTime,
-            endTime: booking.endTime,
+            slotDate: booking.slotDate,
+            slotTime: booking.slotTime,
             createdAt: booking.createdAt,
             updatedAt: booking.updatedAt,
             teacher: booking.Teacher ? {
@@ -147,11 +131,11 @@ exports.getStudentBookings = async (req, res) => {
 exports.updateBooking = async (req, res) => {
     try {
         const { id } = req.params;
-        const { startTime, endTime } = req.body;
+        const { slotDate, slotTime } = req.body;
         const booking = await Booking.findByPk(id);
         if (booking) {
-            booking.startTime = startTime;
-            booking.endTime = endTime;
+            booking.slotDate = slotDate;
+            booking.slotTime = slotTime;
             await booking.save();
             res.status(200).json(booking);
         } else {
@@ -188,8 +172,16 @@ exports.CompletedBookings = async (req, res) => {
             // send email to teacher
             await sendEmail({
                 email: (await Teacher.findByPk(booking.teacherId)).email,
-                subject: 'Booking Completed',
-                text: `Your booking with ${await (User.findByPk(booking.studentId)).email} has been completed.`,
+                subject: 'Booking Confirmation',
+                text: `Dear ${await (Teacher.findByPk(booking.teacherId)).name},
+        We would like to confirm a new booking for the lesson scheduled on ${booking.slotDate} at ${booking.slotTime},with ${await (User.findByPk(booking.studentId)).name}.
+
+        Please be ready five minutes before the session time and be prepared for the session, In case of any issues or if the student is unable to attend the lesson, please contact your direct supervisor immediately.
+
+        Thank you for your time and efforts.
+
+       Kind regards,
+       [Arabe]`,
             });
 
             // send email to student
@@ -197,7 +189,7 @@ exports.CompletedBookings = async (req, res) => {
                 email: (await User.findByPk(booking.studentId)).email,
                 subject: 'Booking Completed',
                 text: `Dear ${await (User.findByPk(booking.studentId)).name},
-           We are pleased to inform you that your booking has been successfully confirmed from ${booking.startTime} to ${booking.endTime}, with ${await (Teacher.findByPk(booking.teacherId)).name}. The total amount for your session is ${await (Teacher.findByPk(booking.teacherId)).fees} NIS.
+           We are pleased to inform you that your booking has been successfully confirmed from ${booking.slotDate} to ${booking.slotTime}, with ${await (Teacher.findByPk(booking.teacherId)).name}. The total amount for your session is ${await (Teacher.findByPk(booking.teacherId)).fees} NIS.
 
          If you have any further questions or need assistance, please feel free to reach out to us via WhatsApp at +972 50-292-6398
 
@@ -232,7 +224,7 @@ exports.getCompletedBookings = async (req, res) => {
                 model: User,
                 attributes: ['id', 'name', 'email']
             }],
-            order: [['startTime', 'ASC']]
+            order: [['slotDate', 'ASC']]
         });
 
         const completedBookings = bookings.filter(booking => booking.isCompleted);
@@ -258,8 +250,8 @@ exports.getCompletedBookings = async (req, res) => {
                 name: booking.User.name,
                 email: booking.User.email
             },
-            startTime: booking.startTime,
-            endTime: booking.endTime
+            slotDate: booking.slotDate,
+            slotTime: booking.slotTime
         }));
 
         res.status(200).json({
@@ -287,7 +279,7 @@ exports.getBookingByTeacherId = async (req, res) => {
             model: User,
                 attributes: ['id', 'name', 'email']
            }],
-            order: [['startTime', 'ASC']]
+            order: [['slotTime', 'ASC']]
         });
         if (!bookings || bookings.length === 0) {
             return res.status(404).json({ message: 'No bookings found' });
@@ -308,8 +300,8 @@ exports.getBookingByTeacherId = async (req, res) => {
                  name: booking.User.name,
                  email: booking.User.email
              },
-             startTime: booking.startTime,
-             endTime: booking.endTime
+             slotDate: booking.slotDate,
+             slotTime: booking.slotTime
          };
      });
         res.status(200).json({
@@ -321,3 +313,33 @@ exports.getBookingByTeacherId = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
+
+exports.getBookedSlots = async (req, res) => {
+    try {
+        const { teacherId, slotDate } = req.query;
+
+        const bookings = await Booking.findAll({
+            where: {
+                teacherId,
+                slotDate
+            },
+            attributes: ['slotTime']
+        });
+
+        const bookedSlots = bookings.map(booking => booking.slotTime);
+
+        return res.status(200).json({
+            success: true,
+            bookedSlots
+        });
+
+    } catch (error) {
+        console.error('Error fetching booked slots:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error fetching booked slots',
+            error: error.message
+        });
+    }
+};

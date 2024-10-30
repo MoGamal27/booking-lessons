@@ -33,12 +33,17 @@ exports.createUser = asyncHandler(async (req, res) => {
 
   // Get a single
   exports.getUserById = asyncHandler(async (req, res) => {
-    const user = await User.findByPk(req.user.id);
+    const { userId } = req.params
+    const user = await User.findOne({
+      where: { id: userId }
+    })
     if (!user) {
-      res.status(404);
-      throw new Error('User not found');
+      res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json(user);
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
   });
 
   // Update a user
@@ -62,3 +67,22 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   await user.destroy();
   res.status(204).end();
   });
+
+  // increas points user
+exports.addPoints = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { points } = req.body;
+  try{
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+    user.point += points;
+    await user.save();
+    res.status(200).json({ success: true , message: 'Points added successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding points' });
+  }
+})
+
