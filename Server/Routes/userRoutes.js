@@ -1,6 +1,5 @@
 const { createUser, getAllUsers, getUserById, updateUser, deleteUser, addPoints } = require('../Controller/userController');
 const { validateUser } = require('../utils/validators/userValidator');
-const verifyToken = require("../Middleware/verifytoken");
 const router = require('express').Router();
 
 router.post('/', validateUser ,createUser);

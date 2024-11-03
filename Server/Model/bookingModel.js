@@ -8,7 +8,7 @@ Booking.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: 'users',
       key: 'id'
     }
   },
@@ -16,7 +16,7 @@ Booking.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Teachers',
+      model: 'teachers',
       key: 'id'
     }
   },
