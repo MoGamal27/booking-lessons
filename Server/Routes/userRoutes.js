@@ -5,9 +5,9 @@ const router = require('express').Router();
 
 router.post('/', validateUser ,createUser);
 router.get('/', getAllUsers);
-router.get('/:id', verifyToken ,getUserById);
+router.get('/oneUser/:userId',getUserById);
 router.put('/:id', validateUser ,updateUser);
-router.post('/addPoints/:id' ,addPoints);
+router.put('/point/addPoints' ,addPoints);
 router.delete('/:id', deleteUser);
 
 

@@ -32,7 +32,10 @@ exports.createTeacher = async (req, res) => {
 
 exports.getAllTeachers = asyncHandler(async (req, res) => {
     const teachers = await Teacher.findAll();
-    res.status(200).json(teachers);
+    res.status(200).json({
+       success: true,
+        data: teachers 
+    });
 
 });
 
@@ -42,7 +45,10 @@ exports.getTeacherById = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error('Teacher not found');
     }
-    res.status(200).json(teacher);
+    res.status(200).json({
+        success: true,
+        data: teacher
+    });
 });
 
 
@@ -54,7 +60,10 @@ exports.updateTeacher = asyncHandler(async (req, res) => {
         throw new Error('Teacher not found');
     }
     await teacher.update(req.body);
-    res.status(200).json(teacher);
+    res.status(200).json({
+        success: true,
+        data: teacher
+    });
 })
 
 exports.deleteTeacher = asyncHandler(async (req, res) => {

@@ -49,7 +49,7 @@ exports.getBookings = async (req, res) => {
         });
 
         if (!bookings || bookings.length === 0) {
-            return res.status(404).json({ message: 'No incomplete bookings found' });
+            return res.status(404).json({ success: false ,message: 'No incomplete bookings found' });
         }
 
         // transform the data to match the frontend expectations
@@ -168,13 +168,21 @@ exports.CompletedBookings = async (req, res) => {
         if (booking) {
             booking.isCompleted = true;
             await booking.save();
+            
+            const teacher = await Teacher.findByPk(booking.teacherId);
+            const teacherName = teacher.name;
+            const teacherEmail = teacher.email;
+            const teacherFees = teacher.fees;
 
+            const student = await User.findByPk(booking.studentId);
+           const studentName = student.name;
+           const studentEmail = student.email;
             // send email to teacher
             await sendEmail({
-                email: (await Teacher.findByPk(booking.teacherId)).email,
+                email: teacherEmail,
                 subject: 'Booking Confirmation',
-                text: `Dear ${await (Teacher.findByPk(booking.teacherId)).name},
-        We would like to confirm a new booking for the lesson scheduled on ${booking.slotDate} at ${booking.slotTime},with ${await (User.findByPk(booking.studentId)).name}.
+                text: `Dear ${teacherName},
+        We would like to confirm a new booking for the lesson scheduled on ${booking.slotDate} at ${booking.slotTime},with ${studentEmail}.
 
         Please be ready five minutes before the session time and be prepared for the session, In case of any issues or if the student is unable to attend the lesson, please contact your direct supervisor immediately.
 
@@ -184,12 +192,13 @@ exports.CompletedBookings = async (req, res) => {
        [Arabe]`,
             });
 
+
             // send email to student
             await sendEmail({
-                email: (await User.findByPk(booking.studentId)).email,
+                email: studentEmail,
                 subject: 'Booking Completed',
-                text: `Dear ${await (User.findByPk(booking.studentId)).name},
-           We are pleased to inform you that your booking has been successfully confirmed from ${booking.slotDate} to ${booking.slotTime}, with ${await (Teacher.findByPk(booking.teacherId)).name}. The total amount for your session is ${await (Teacher.findByPk(booking.teacherId)).fees} NIS.
+                text: `Dear ${studentName},
+           We are pleased to inform you that your booking has been successfully confirmed from ${booking.slotDate} to ${booking.slotTime}, with ${teacherEmail}. The total amount for your session is ${teacherFees}$.
 
          If you have any further questions or need assistance, please feel free to reach out to us via WhatsApp at +972 50-292-6398
 
@@ -277,7 +286,7 @@ exports.getBookingByTeacherId = async (req, res) => {
             },
            {
             model: User,
-                attributes: ['id', 'name', 'email']
+                attributes: ['id', 'name', 'point' ,'email']
            }],
             order: [['slotTime', 'ASC']]
         });

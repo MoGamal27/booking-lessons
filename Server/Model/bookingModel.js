@@ -32,6 +32,10 @@ Booking.init({
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
+  price: {
+    type: DataTypes.INTEGER,
+   defaultValue: 0
+  },
 }, {
   sequelize,
   modelName: 'Booking',

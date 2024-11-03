@@ -9,7 +9,7 @@ const router = require('express').Router();
 router.post('/', verifyToken, verifyRole(userRoles.ADMIN), createTeacher);
 router.get('/', getAllTeachers);
 router.get('/:id', getTeacherById);
-router.put('/:id' , verifyRole(userRoles.ADMIN), updateTeacher);
+router.put('/:id' , verifyToken , updateTeacher);
 router.delete('/:id', verifyRole(userRoles.ADMIN), deleteTeacher);
 
 module.exports = router

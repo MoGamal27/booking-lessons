@@ -7,21 +7,20 @@ const authRoutes = require('./Routes/authRoutes');
 const googleRoutes = require('./Routes/googleRoutes');
 const cors = require('cors');
 const http = require('http');
-const initializeSocketServer = require('./socketServer');
-const chatSocket = require('./sockets/chatSocket');
 const app = express();
 
-// Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: 'https://student-test-hcnj.vercel.app/', // replace with your frontend URL
+  optionsSuccessStatus: 200
+};
+
+// Enable CORS with options
+app.use(cors(corsOptions));
 
 
 const server = http.createServer(app);
 
-// Initialize Socket.IO
-const io = initializeSocketServer(server);
 
-// Set up chat socket functionality
-chatSocket(io);
 
 // Connect to DB
 sequelize.sync()

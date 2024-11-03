@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.0",
     "cors": "^2.8.5",
