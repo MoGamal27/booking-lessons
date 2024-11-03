@@ -3,7 +3,7 @@ const { createTeacher, getAllTeachers, getTeacherById, updateTeacher, deleteTeac
 //const upload = require('../Middleware/uploadMiddleware');
 const verifyRole = require('../Middleware/verifyRole');
 const userRoles = require('../utils/userRoles');
-const verifyToken = require('../Middleware/verifytoken');
+const verifyToken = require('../Middleware/verifyToken');
 const router = require('express').Router();
 
 router.post('/', verifyToken, verifyRole(userRoles.ADMIN), createTeacher);

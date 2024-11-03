@@ -1,6 +1,6 @@
 const { createBooking, getBookings, getStudentBookings, updateBooking, deleteBooking, CompletedBookings, getCompletedBookings, getBookingByTeacherId, getBookedSlots } = require("../Controller/bookingController");
 const { validateBooking } = require("../utils/validators/bookingValidator");
-const verifyToken = require("../Middleware/verifytoken");
+const verifyToken = require("../Middleware/verifyToken");
 const router = require('express').Router();
 
 router.post('/create', verifyToken, createBooking);
