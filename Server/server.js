@@ -9,13 +9,13 @@ const cors = require('cors');
 const http = require('http');
 const app = express();
 
-const corsOptions = {
-  origin: 'https://student-test-hcnj.vercel.app/', // replace with your frontend URL
-  optionsSuccessStatus: 200
-};
 
-// Enable CORS with options
-app.use(cors(corsOptions));
+
+// Enable CORS for all origins
+app.use(cors({
+  origin: '*'
+}));
+
 
 
 const server = http.createServer(app);
