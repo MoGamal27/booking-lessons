@@ -168,60 +168,99 @@ exports.deleteBooking = async (req, res) => {
 exports.CompletedBookings = async (req, res) => {
     try {
         const { id } = req.body;
-        const booking = await Booking.findByPk(id)
-        if (booking) {
-            booking.isCompleted = true;
-            await booking.save();
-            
-            const teacher = await Teacher.findByPk(booking.teacherId);
-            const teacherName = teacher.name;
-            const teacherEmail = teacher.email;
-            const teacherFees = teacher.fees;
-
-            const student = await User.findByPk(booking.studentId);
-           const studentName = student.name;
-           const studentEmail = student.email;
-            // send email to teacher
-            await sendEmail({
-                email: teacherEmail,
-                subject: 'Booking Confirmation',
-                text: `Dear ${teacherName},
-        We would like to confirm a new booking for the lesson scheduled on ${booking.slotDate} at ${booking.slotTime},with ${studentEmail}.
-
-        Please be ready five minutes before the session time and be prepared for the session, In case of any issues or if the student is unable to attend the lesson, please contact your direct supervisor immediately.
-
-        Thank you for your time and efforts.
-
-       Kind regards,
-       [Arabe]`,
+        
+        // Validate if ID exists
+        if (!id) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Booking ID is required' 
             });
-
-
-            // send email to student
-            await sendEmail({
-                email: studentEmail,
-                subject: 'Booking Completed',
-                text: `Dear ${studentName},
-           We are pleased to inform you that your booking has been successfully confirmed from ${booking.slotDate} to ${booking.slotTime}, with ${teacherEmail}. The total amount for your session is ${teacherFees}$.
-
-         If you have any further questions or need assistance, please feel free to reach out to us via WhatsApp at +972 50-292-6398
-
-              Thank you for booking with us!
-
-                 Best regards,
-                 [Arabe Academy] `,
-            });
-            res.status(200).json({
-                success: true,
-                message:'booking Complated Successfully '});
-        } else {
-            res.status(404).json({ message: 'Booking not found' });
         }
+
+        const booking = await Booking.findByPk(id);
+        if (!booking) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'Booking not found' 
+            });
+        }
+
+        // Check if booking is already completed
+        if (booking.isCompleted) {
+            return res.status(400).json({
+                success: false,
+                message: 'Booking is already marked as completed'
+            });
+        }
+
+        booking.isCompleted = true;
+        await booking.save();
+
+        // Fetch teacher and student data with error handling
+        const teacher = await Teacher.findByPk(booking.teacherId);
+        if (!teacher) {
+            return res.status(404).json({
+                success: false,
+                message: 'Teacher information not found'
+            });
+        }
+
+        const student = await User.findByPk(booking.studentId);
+        if (!student) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student information not found'
+            });
+        }
+
+        // Send emails
+        try {
+            await sendEmail({
+                email: teacher.email,
+                subject: 'Booking Confirmation',
+                text: `Dear ${teacher.name},
+                    We would like to confirm a new booking for the lesson scheduled on ${booking.slotDate} at ${booking.slotTime}, with ${student.email}.
+
+                    Please be ready five minutes before the session time and be prepared for the session. In case of any issues or if the student is unable to attend the lesson, please contact your direct supervisor immediately.
+
+                    Thank you for your time and efforts.
+
+                    Kind regards,
+                    [Arabe]`
+            });
+
+            await sendEmail({
+                email: student.email,
+                subject: 'Booking Completed',
+                text: `Dear ${student.name},
+                    We are pleased to inform you that your booking has been successfully confirmed from ${booking.slotDate} to ${booking.slotTime}, with ${teacher.email}. The total amount for your session is ${teacher.fees}$.
+
+                    If you have any further questions or need assistance, please feel free to reach out to us via WhatsApp at +972 50-292-6398
+
+                    Thank you for booking with us!
+
+                    Best regards,
+                    [Arabe Academy]`
+            });
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError);
+            // Continue with the response even if email fails
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Booking Completed Successfully'
+        });
+
     } catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.error('CompletedBookings Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: error.message
+        });
     }
-    };
+};
 
     
 
