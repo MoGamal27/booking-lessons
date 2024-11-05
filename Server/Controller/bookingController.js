@@ -98,7 +98,11 @@ exports.getStudentBookings = async (req, res) => {
         });
 
         if (!bookings || bookings.length === 0) {
-            return res.status(404).json({ message: 'No bookings found for this student' });
+            return res.status(200).json({ 
+                succuess: true,
+                message: 'No bookings found for this student',
+                data: []
+            });
         }
 
         // Transform the data to match the frontend expectations
