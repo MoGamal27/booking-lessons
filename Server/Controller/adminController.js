@@ -4,6 +4,8 @@
  const User = require('../Model/userModel');
  const appError = require('../utils/appError');
  const Teacher = require('../Model/teacherModel');
+ const  Point  = require('../Model/PointModel');
+ const asyncHandler = require('express-async-handler');
  //API for admin  logn 
  const loginAdmin = async (req, res, next) => {
 
@@ -54,5 +56,68 @@ const loginTeacher = async (req, res, next) => {
     }
 }
 
+  // increas points user
+  const approvePoints = asyncHandler(async (req, res) => {
+    console.log(req.body);
+    const { pointRequestId } = req.body;
+    try{
+        const requestPoint = await Point.findByPk(pointRequestId);
+        if (!requestPoint) {
+            return res.status(404).json({ message: 'Point request not found' });
+        }
+        const user = await User.findByPk(requestPoint.studentId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+      // Convert points to a floating-point number
+      const pointsToAdd = parseFloat(requestPoint.points);
+      // Update the user's points
+      user.point += pointsToAdd;
+      await user.save();
 
-module.exports = {loginAdmin, loginTeacher};
+       // Delete the processed point request
+      await requestPoint.destroy();
+
+      res.status(200).json({ success: true , message: 'Points added successfully' });
+
+    } catch (error) {
+      console.error('Error adding points:', error);
+      res.status(500).json({ message: 'Error adding points' });
+    }
+  })
+
+  // cancel points user
+  const cancelPoints = asyncHandler(async (req, res) => {
+    console.log('req from cancel', req.query);
+    const { pointRequestId } = req.query;
+    try{
+        const request = await Point.findByPk(pointRequestId);
+        if (!request) {
+            return res.status(404).json({ message: 'Point request not found' });
+        }
+        const user = await User.findByPk(request.studentId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+         
+        // delete request
+        await request.destroy();
+        res.status(200).json({ success: true , message: 'Points deleted successfully' });
+
+    } catch (error) {
+        console.error('Error adding points:', error);
+        res.status(500).json({ message: 'Error adding points' });
+    }
+  })
+
+  const getPoints = asyncHandler(async (req, res) => {
+    const points = await Point.findAll();
+    res.status(200).json({
+        success: true,
+        data: points
+    });
+});
+
+
+
+module.exports = {loginAdmin, loginTeacher, approvePoints, cancelPoints, getPoints};

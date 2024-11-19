@@ -25,7 +25,7 @@ User.init({
     },
     point: {
         type: DataTypes.INTEGER,
-        defaultValue: 0,
+        defaultValue: 10,
     }
 }, {
   sequelize,

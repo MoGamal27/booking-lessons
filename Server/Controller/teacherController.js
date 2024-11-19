@@ -1,5 +1,6 @@
 const Teacher = require('../Model/teacherModel');
 const asyncHandler = require('express-async-handler');
+const  Point  = require('../Model/PointModel');
 //const { uploadToCloudinary } = require('../Services/cloudinaryService');
 //const cloudinary = require('cloudinary').v2
 
@@ -75,5 +76,20 @@ exports.deleteTeacher = asyncHandler(async (req, res) => {
     await teacher.destroy();
     res.status(204).end();
 });
+
+exports.addPoints = asyncHandler(async (req, res) => {
+    const { teacherId, studentId, points } = req.body;
+    const point = await Point.create({
+        teacherId,
+        studentId,
+        points
+    });
+    res.status(201).json({
+        success: true,
+        data: point
+    });
+});
+
+
 
 
