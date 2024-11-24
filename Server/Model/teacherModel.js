@@ -36,6 +36,10 @@ Teacher.init({
     fees: {
         type: DataTypes.INTEGER,
         allowNull: true,
+    },
+    zoomLink: {
+        type: DataTypes.TEXT,
+        allowNull: true,
     }
 }, {
     sequelize,

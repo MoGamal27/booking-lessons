@@ -1,4 +1,4 @@
-const { createBooking, getBookings, getStudentBookings, updateBooking, deleteBooking, CompletedBookings, getCompletedBookings, getBookingByTeacherId, getBookedSlots } = require("../Controller/bookingController");
+const { createBooking, getBookings, getStudentBookings, updateBooking, deleteBooking, CompletedBookings, getCompletedBookings, getBookingByTeacherId, getBookedSlots, getCompletedCourses } = require("../Controller/bookingController");
 const { validateBooking } = require("../utils/validators/bookingValidator");
 const verifyToken = require("../Middleware/verifyToken");
 const router = require('express').Router();
@@ -9,6 +9,7 @@ router.get('/completed-booking', getCompletedBookings);
 router.get('/', getBookings);
 router.get('/student/:studentId' ,getStudentBookings);
 router.get('/teacher/:teacherId', getBookingByTeacherId);
+router.get('/completed-courses',  verifyToken, getCompletedCourses);
 router.put('/:id', validateBooking ,updateBooking);
 router.delete('/:id', deleteBooking);   
 router.get('/booked-slots', getBookedSlots);

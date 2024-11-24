@@ -213,34 +213,37 @@ exports.CompletedBookings = async (req, res) => {
             });
         }
 
-        // Send emails
+        // Send emails to teacher 
         try {
             await sendEmail({
                 email: teacher.email,
                 subject: 'Booking Confirmation',
-                text: `Dear ${teacher.name},
-                    We would like to confirm a new booking for the lesson scheduled on ${booking.slotDate} at ${booking.slotTime}, with ${student.email}.
-
-                    Please be ready five minutes before the session time and be prepared for the session. In case of any issues or if the student is unable to attend the lesson, please contact your direct supervisor immediately.
-
-                    Thank you for your time and efforts.
-
-                    Kind regards,
-                    [Arabe]`
+                html: `
+                    <div style="font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; padding: 20px; background-color: #f9f9f9; color: #333;">
+                        <h2 style="color: #2c3e50;">Booking Confirmation</h2>
+                        <p>Dear <strong>${teacher.name}</strong>,</p>
+                        <p>We would like to confirm a new booking for the lesson scheduled on <strong>${booking.slotDate}</strong> at <strong>${booking.slotTime}</strong>, with <strong>${student.email}</strong>.</p>
+                        <p>Please be ready five minutes before the session time and be prepared for the session. In case of any issues or if the student is unable to attend the lesson, please contact your direct supervisor immediately.</p>
+                        <p>Thank you for your time and efforts.</p>
+                        <p>Kind regards,<br>[Arabe]</p>
+                    </div>
+                `
             });
-
+            // Send email to student
             await sendEmail({
                 email: student.email,
                 subject: 'Booking Completed',
-                text: `Dear ${student.name},
-                    We are pleased to inform you that your booking has been successfully confirmed from ${booking.slotDate} to ${booking.slotTime}, with ${teacher.email}. The total amount for your session is ${teacher.fees}$.
-
-                    If you have any further questions or need assistance, please feel free to reach out to us via WhatsApp at +972 50-292-6398
-
-                    Thank you for booking with us!
-
-                    Best regards,
-                    [Arabe Academy]`
+                html: `
+                    <div style="font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; padding: 20px; background-color: #f9f9f9; color: #333;">
+                        <h2 style="color: #2c3e50;">Booking Completed</h2>
+                        <p>Dear <strong>${student.name}</strong>,</p>
+                        <p>We are pleased to inform you that your booking has been successfully confirmed from <strong>${booking.slotDate}</strong> to <strong>${booking.slotTime}</strong>, with <strong>${teacher.email}</strong>. The total amount for your session is <strong>${teacher.fees}$</strong>.</p>
+                        <p>If you have any further questions or need assistance, please feel free to reach out to us via WhatsApp at <strong>+972 50-292-6398</strong>.</p>
+                        <p>Link to the lesson: <a href="${teacher.zoomLink}">${teacher.zoomLink}</a></p>
+                        <p>Thank you for booking with us!</p>
+                        <p>Best regards,<br>[Arabe Academy]</p>
+                    </div>
+                `
             });
         } catch (emailError) {
             console.error('Email sending failed:', emailError);
@@ -395,3 +398,29 @@ exports.getBookedSlots = async (req, res) => {
         });
     }
 };
+
+// get completed course by student id
+exports.getCompletedCourses = async (req, res) => {
+    try {
+        const studentId = req.currentUser.id;
+        const completedCourses = await Booking.findAll({
+            where: { studentId, isCompleted: true },
+            include: [{
+                model: Teacher,
+                attributes: ['id', 'name', 'image']
+            }],
+            order: [['slotDate', 'ASC']]
+        })
+        res.status(200).json({
+                success: true,
+                data: completedCourses
+            });
+        } catch (error) {
+            console.error('Error fetching completed courses:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error fetching completed courses',
+                error: error.message
+            });
+        }
+    }
