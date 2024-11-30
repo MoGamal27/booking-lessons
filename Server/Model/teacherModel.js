@@ -40,7 +40,27 @@ Teacher.init({
     zoomLink: {
         type: DataTypes.TEXT,
         allowNull: true,
-    }
+    },
+    location: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    specialization: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    degree: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    speaks: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    courseDescription: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
 }, {
     sequelize,
     modelName: 'Teacher',

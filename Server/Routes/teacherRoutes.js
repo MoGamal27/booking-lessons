@@ -11,7 +11,7 @@ router.post('/point/addPoints', addPoints);
 router.get('/', getAllTeachers);
 router.get('/:id', getTeacherById);
 
-router.put('/:id' , verifyToken , updateTeacher);
+router.put('/:id' , updateTeacher);
 router.delete('/:id', verifyRole(userRoles.ADMIN), deleteTeacher);
 
 module.exports = router
