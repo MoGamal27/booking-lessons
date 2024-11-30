@@ -4,6 +4,7 @@ const User = require('./userModel');
 const Teacher = require('./teacherModel');
 const Booking = require('./bookingModel');
 const Point = require('./PointModel');
+const Token = require('./tokenModel');
 // define associations
 
 
@@ -18,6 +19,9 @@ User.hasMany(Point, { foreignKey: 'studentId', as: 'studentRequests' });
 
 Point.belongsTo(Teacher, { foreignKey: 'teacherId', as: 'teacher' });
 Point.belongsTo(User, { foreignKey: 'studentId', as: 'student' });
+
+User.hasMany(Token, { foreignKey: 'userId', sourceKey: 'id' });
+Token.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
 
 

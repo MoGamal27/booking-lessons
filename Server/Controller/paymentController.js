@@ -2,6 +2,7 @@ require('dotenv').config()
 const {Booking, Teacher, User} = require('../Model/index');
 const paypal = require('@paypal/checkout-server-sdk');
 const sendEmail = require('../Services/emailService');
+const asyncHandeler = require('express-async-handler');
 
 const environment = new paypal.core.SandboxEnvironment('AfhUouOs3xx6CHsWXPhX1K9dUfk0231k2U-8Nra2NkkTRdBdyIkOZVHkbnqEf-E54oMjXlfHTBe8Ddl6', 'EG6XpzScO4iLucG7UJawJANZIO3CV1zQB3I7sUbI064hQeinLhrJVOdw9wHv0nEXnzcVxnOAT3IDkV-T');
 const client = new paypal.core.PayPalHttpClient(environment);
@@ -133,22 +134,28 @@ await sendEmail({
 };*/
 
 
-exports.payWithPoints = async (req, res) => {
+exports.payWithPoints = asyncHandeler(async (req, res) => {
   const { bookingId, studentId } = req.body;
 
   const booking = await Booking.findByPk(bookingId);
   const student = await User.findByPk(studentId);
 
   if (!booking || !student) {
-    return res.status(404).json({ message: "Booking or student not found" });
+    return res.status(404).json({ 
+      success: false,
+      message: "Booking or student not found" });
   }
 
   if (booking.studentId !== studentId) {
-    return res.status(403).json({ message: "You are not authorized to pay for this booking" });
+    return res.status(403).json({ 
+      success: false,
+      message: "You are not authorized to pay for this booking" });
   }
 
   if (booking.isCompleted) {
-    return res.status(400).json({ message: "Booking is already completed" });
+    return res.status(400).json({ 
+      success: false,
+      message: "Booking is already completed" });
   }
 
   // Check if this is the student's first booking
@@ -162,7 +169,8 @@ exports.payWithPoints = async (req, res) => {
   const requiredPoints = previousBookings === 0 ? 10 : 20;
 
   if (student.point < requiredPoints) {
-    return res.status(400).json({ 
+    return res.status(400).json({
+      success: false, 
       message: `Insufficient points. You need ${requiredPoints} points for this booking.` 
     });
   }
@@ -181,6 +189,13 @@ exports.payWithPoints = async (req, res) => {
       message: 'Teacher information not found'
     });
   }
+
+  res.status(200).json({ 
+    success: true,
+    message: "Payment successful",
+    pointsDeducted: requiredPoints,
+    remainingPoints: student.point
+  });
 
   // Admin notification email
   await sendEmail({
@@ -230,9 +245,4 @@ exports.payWithPoints = async (req, res) => {
     `
   });
 
-  res.status(200).json({ 
-    message: "Payment successful",
-    pointsDeducted: requiredPoints,
-    remainingPoints: student.point
-  });
-};
+});
