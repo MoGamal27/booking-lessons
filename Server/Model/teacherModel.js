@@ -49,11 +49,19 @@ Teacher.init({
         type: DataTypes.STRING,
         allowNull: true,
     },
+    levelTeach: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     degree: {
         type: DataTypes.STRING,
         allowNull: true,
     },
     speaks: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    levelSpeak: {
         type: DataTypes.STRING,
         allowNull: true,
     },
