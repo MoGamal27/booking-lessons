@@ -49,7 +49,7 @@ Teacher.init({
         type: DataTypes.STRING,
         allowNull: true,
     },
-    levelTeach: {
+    levelTeache: {
         type: DataTypes.STRING,
         allowNull: true,
     },
