@@ -1,6 +1,6 @@
 const Teacher = require('../Model/teacherModel');
 const asyncHandler = require('express-async-handler');
-const { Point }  = require('../Model/PointModel');
+const  Point   = require('../Model/PointModel');
 //const { uploadToCloudinary } = require('../Services/cloudinaryService');
 //const cloudinary = require('cloudinary').v2
 
