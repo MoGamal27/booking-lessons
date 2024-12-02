@@ -190,12 +190,7 @@ exports.payWithPoints = asyncHandeler(async (req, res) => {
     });
   }
 
-  res.status(200).json({ 
-    success: true,
-    message: "Payment successful",
-    pointsDeducted: requiredPoints,
-    remainingPoints: student.point
-  });
+
 
   // Admin notification email
   await sendEmail({
@@ -243,6 +238,13 @@ exports.payWithPoints = asyncHandeler(async (req, res) => {
         <p>Best regards,<br>[Arabe Academy]</p>
       </div>
     `
+  });
+
+  res.status(200).json({ 
+    success: true,
+    message: "Payment successful",
+    pointsDeducted: requiredPoints,
+    remainingPoints: student.point
   });
 
 });
