@@ -24,7 +24,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
             }).save();
         }
 
-        const link = `${process.env.BASE_URL}`;
+        const link = `${process.env.BASE_URL}/${user.id}/${token.token}`;
         await sendEmail({
             email: user.email,
             subject: "Reset Password",
