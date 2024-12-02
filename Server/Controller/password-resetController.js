@@ -5,6 +5,7 @@ const appError = require('../utils/appError');
 const crypto = require('crypto');
 const sendEmail = require('../Services/emailService');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 // send password reset link
 exports.resetPassword = asyncHandler(async (req, res, next) => {
