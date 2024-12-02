@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Token = require('../Model/tokenModel');
 const User = require('../Model/userModel');
 const asyncHandler = require('express-async-handler');
@@ -5,7 +6,7 @@ const appError = require('../utils/appError');
 const crypto = require('crypto');
 const sendEmail = require('../Services/emailService');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
+
 
 // send password reset link
 exports.resetPassword = asyncHandler(async (req, res, next) => {
