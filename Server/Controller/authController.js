@@ -7,7 +7,7 @@ const sendEmail = require('../Services/emailService');
 const { text } = require('stream/consumers');
 
 exports.signup = asyncHandler(async (req, res, next) => {
-    const { name, email, phone, password, role } = req.body;
+    const { name, email, phone, password, confirmPassword, role } = req.body;
   
     const hashedPassword = await bcrypt.hash(password, 10);
   
@@ -16,6 +16,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
             email,
             phone,
             password: hashedPassword,
+            confirmPassword: hashedPassword,
             role
         });
     

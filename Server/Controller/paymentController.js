@@ -37,6 +37,10 @@ exports.createOrder = async (req, res) => {
         },
       },
     ],
+    application_context: {
+      user_action: "PAY_NOW", // Set to "PAY_NOW" to redirect the user to PayPal for payment
+      shipping_preference: "NO_SHIPPING", // Remove billing address
+    },
   });
 
   try {
@@ -47,6 +51,7 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ message: "Failed to create PayPal order" });
   }
 };
+
 
 
 // pay with student points
