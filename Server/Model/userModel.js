@@ -21,10 +21,6 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
-    confirmPassword: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     role: {
         type: DataTypes.ENUM,
         values: Object.values(userRoles),
