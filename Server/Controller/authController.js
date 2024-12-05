@@ -57,7 +57,11 @@ exports.signIn = asyncHandler(async (req, res, next) => {
        const user = await User.findOne({ where: { email: req.body.email } });
 
         if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-          return next(new appError('Incorrect email or password', 401));
+         res.status(401).json({
+          success: false,
+            status: 'fail',
+            message: 'Invalid email or password'
+        });
         }
 
         const token = await generateJWT({id: user.id, role: user.role});
