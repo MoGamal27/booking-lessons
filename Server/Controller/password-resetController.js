@@ -15,7 +15,11 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ where:{ email: req.body.email} });
 
     if (!user) {
-        return next(new appError("User not found", 404));
+        res.status(404).json({
+           success: false,
+            status: 'fail',
+            message: 'No user found with this email'
+        });
     }
     
 
@@ -45,7 +49,11 @@ exports.resetUserPassword = asyncHandler(async (req, res, next) => {
     const user = await User.findByPk(req.params.userId);
 
     if (!user) {
-        return next(new appError("User not found", 404));
+        res.status(404).json({
+            success: false,
+            status: 'fail',
+            message: 'User not found'
+        });
     }
 
     const token = await Token.findOne({
@@ -55,11 +63,19 @@ exports.resetUserPassword = asyncHandler(async (req, res, next) => {
         }
     });
 
-    if (!token) return res.status(400).send("Invalid link or expired");
+    if (!token) return res.status(400).json({
+        success: false,
+        status: 'fail',
+        message: 'Invalid token'
+    });
       
        const { password } = req.body;
        
-       if(!password) return res.status(400).send("Please provide new password");
+       if(!password) return res.status(400).json({
+        success: false,
+        status: 'fail',
+        message: 'Please enter your password'
+    });
 
        const hashedPassword = await bcrypt.hash(password, 10);
         user.password = hashedPassword;
