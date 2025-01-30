@@ -2,7 +2,6 @@ const User = require('../Model/userModel.js');
 const generateJWT = require('../Middleware/generateJWT.js');
 const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
-const appError = require('../utils/appError');
 const sendEmail = require('../Services/emailService');
 
 
